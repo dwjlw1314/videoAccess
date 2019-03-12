@@ -1,0 +1,179 @@
+Ver 1.2.1.Debug
+	添加发送到存储模块的数据包结束标记;
+	修改G_GetCurrentTime函数为G_GetCurrentTimeString;
+	
+Ver 1.3.1.Debug
+	修改线程单一的编解码类;改成mdvr和编解码类一一对应的关系,添加OperMdvrAvMap函数;
+	修改struct MdvrInfo结构体，取消utc字段，添加编解码类创建标记avCreateFlag字段;
+	修改SetSocketCache函数内部实现,添加日志输出;
+	过滤消息头（转发模块,存储模块）全局字段添加4个字节;
+	修改编解码后数据流写入的文件名称创建格式;
+	
+Ver 1.3.2.Debug
+	添加守护进程和监控程序;
+	修改struct ZMQData结构体,添加文件下载相关字段;
+	修改revmsg上层函数实现;
+	添加程序部署脚本;
+	添加文件下载功能;
+	部分bug修复;
+	
+Ver 1.4.1.Debug	
+	注:把音频编码库 fdk-aac-master 改成 vo-aacenc-0.1.3
+	修改一键报警的zmq过滤头字符串格式,增加一键报警(:streamID)和文件下载(-D)过滤头字段
+	修改AvWrite_Frame_data函数失败逻辑，添加递减socketwfd引用计数
+	修改sdk回调过来到数据结构中字段nStreamID=0时改成nStreamID=1；
+	修改一键报警视频类型取消删除redis信息逻辑
+	添加AvWrite_Frame_data函数失败后删除MdvrAvCodecMap节点
+	输出ts流添加音频帧数据;
+
+Ver 1.4.2.Debug	
+	增加视频接入自动升级功能，参考CAAutopUpgrade类,升级成功写入upgrade/Success.txt文件,失败写入false.txt
+	增加VideoAccess_upgrade.conf文件,升级使用
+	修改G_ShadowDaemon函数实现
+	修改程序崩溃的BUG
+	程序性能优化
+	
+Ver 1.4.3.Release
+	增加 G_SetSecurityLimit 函数
+	修改升级过程，补充增加lib库时ld.so.conf文件中的相关条目信息
+	修改vasinstall.sh脚本内容，添加自启动功能	脚本/etc/rc.d/init.d/VAS_AccessAutoStart.sh
+	修改G_ModifyMdvrInfoNode函数del模式的实现代码
+	修改buffer_data结构体，取消部分变量
+	修改程序名，统一格式：VAS_Access
+	
+Ver 1.4.4.Release
+	修改编解码同步引起的视频卡顿和丢帧问题
+	完善升级过程
+	
+Ver 1.4.5.Release
+	增加不同帧率的音视频同步功能
+	修改一键报警和文件下载视频播放倍速快的bug
+	修改实时播放一段时间后没有声音的问题
+	
+Ver 1.4.6.Release
+	修改3G模式播放不流畅问题
+	修改3G模式编解码库引起的崩溃问题
+	
+Ver 1.4.7.Release
+	修改解码库析构函数到过程
+	//编解码类初始化与运行单独分开处理
+	
+*************************************升级包文件内容***************************************************
+升级包名称:VAS_AccessUpgrade.tar.gz
+1. 相关库目录
+2. 可执行程序
+3. vainstall.sh 脚本文件
+4. VideoAccess.conf/VideoAccess_upgrade.conf 和 VideoZlog.conf 三个配置文件
+
+升级说明：
+	打升级包，需要正在运行的源程序配置文件中的相关配置内容
+	成功后，upgrade目录下会生成success.txt文件，同时会拷贝VAS_AccessUpgrade.tar.gz到/tmp/目录下
+	并且拷贝升级前的VideoAccess.conf和VideoZlog.conf配置文件到/opt/下
+****************************************************************************************************
+
+*********************************设备帧率(FPS)和分辨率(RES)参数要求*************************************
+FPS=10； RES=CIF ； 可以保证50k带宽下音视频数据的播放，低带宽优先选择
+服务器支持如下几种参数设置:（具体码率参考 视频质量文档.docx）
+FPS=10； RES=CIF，HD1，D1 ；
+FPS=15； RES=CIF，HD1，D1 ；
+FPS=20； RES=CIF，HD1，D1 ；
+FPS=25； RES=CIF，HD1，D1 ；
+FPS=30； RES=CIF，HD1，D1 ；
+****************************************************************************************************
+
+//*************************以下内容不对外提供*************************************
+
+PAL video=*,audio=27
+NTSC vidoe=*,audio=25
+
+****************************************************************************************************
+制作iso镜像文件命令 mkisofs -r -J -V library32 -o /opt/library32.iso /opt/library32
+这条命令是将/opt/yy目录下到所有文件和目录制作成光盘镜像文件xx.iso,光盘卷标是library32
+****************************************************************************************************
+
+library32/Packages file name
+	alsa-lib-1.0.22-3.el6.i686.rpm
+	alsa-lib-devel-1.0.22-3.el6.i686.rpm
+	alsa-plugins-pulseaudio-1.0.21-3.el6.i686.rpm
+	alsa-utils-1.0.22-5.el6.i686.rpm
+	boost-1.41.0-11.el6_1.2.i686.rpm
+	boost-date-time-1.41.0-11.el6_1.2.i686.rpm
+	boost-devel-1.41.0-11.el6_1.2.i686.rpm
+	boost-filesystem-1.41.0-11.el6_1.2.i686.rpm
+	boost-graph-1.41.0-11.el6_1.2.i686.rpm
+	boost-iostreams-1.41.0-11.el6_1.2.i686.rpm
+	boost-program-options-1.41.0-11.el6_1.2.i686.rpm
+	boost-python-1.41.0-11.el6_1.2.i686.rpm
+	boost-regex-1.41.0-11.el6_1.2.i686.rpm
+	boost-serialization-1.41.0-11.el6_1.2.i686.rpm
+	boost-signals-1.41.0-11.el6_1.2.i686.rpm
+	boost-system-1.41.0-11.el6_1.2.i686.rpm
+	boost-test-1.41.0-11.el6_1.2.i686.rpm
+	boost-thread-1.41.0-11.el6_1.2.i686.rpm
+	boost-wave-1.41.0-11.el6_1.2.i686.rpm
+	bzip2-libs-1.0.5-7.el6_0.i686.rpm
+	compat-libstdc++-296-2.96-144.el6.i686.rpm
+	compat-libstdc++-33-3.2.3-69.el6.i686.rpm
+	dbus-libs-1.2.24-7.el6_3.i686.rpm
+	flac-1.2.1-6.1.el6.i686.rpm
+	glibc-2.12-1.107.el6.i686.rpm
+	keyutils-libs-1.4-4.el6.i686.rpm
+	krb5-libs-1.10.3-10.el6.i686.rpm
+	libgcc-4.4.7-3.el6.i686.rpm
+	libasyncns-0.8-1.1.el6.i686.rpm
+	libcom_err-1.41.12-14.el6.i686.rpm
+	libICE-1.0.6-1.el6.i686.rpm
+	libicu-4.2.1-9.1.el6_2.i686.rpm
+	libogg-1.1.4-2.1.el6.i686.rpm
+	libselinux-2.0.94-5.3.el6.i686.rpm
+	libSM-1.2.1-2.el6.i686.rpm
+	libsndfile-1.0.20-5.el6.i686.rpm
+	libstdc++-4.4.7-3.el6.i686.rpm
+	libstdc++-devel-4.4.7-3.el6.i686.rpm
+	libstdc++-docs-4.4.7-3.el6.i686.rpm
+	libuuid-2.17.2-12.9.el6.i686.rpm
+	libuuid-devel-2.17.2-12.9.el6.i686.rpm
+	libvorbis-1.2.3-4.el6_2.1.i686.rpm
+	libX11-1.5.0-4.el6.i686.rpm
+	libXau-1.0.6-4.el6.i686.rpm
+	libxcb-1.8.1-1.el6.i686.rpm
+	libXext-1.3.1-2.el6.i686.rpm
+	libXi-1.6.1-3.el6.i686.rpm
+	libXtst-1.2.1-2.el6.i686.rpm
+	libXv-1.0.7-2.el6.i686.rpm
+	libXv-devel-1.0.7-2.el6.i686.rpm
+	libXvMC-1.0.7-2.el6.i686.rpm
+	ncurses-libs-5.7-3.20090208.el6.i686.rpm
+	nss-softokn-freebl-3.12.9-11.el6.i686.rpm
+	pulseaudio-libs-0.9.21-14.el6_3.i686.rpm
+	python-libs-2.6.6-36.el6.i686.rpm
+	readline-6.0-4.el6.i686.rpm
+	sqlite-3.6.20-1.el6.i686.rpm
+	tcp_wrappers-libs-7.6-57.el6.i686.rpm
+	uuid-1.6.1-10.el6.i686.rpm
+	uuidd-2.17.2-12.9.el6.i686.rpm
+	zlib-1.2.3-29.el6.i686.rpm
+	xorg-x11-proto-devel-7.6-25.el6.noarch.rpm
+	libX11-devel-1.5.0-4.el6.i686.rpm
+	libXext-devel-1.3.1-2.el6.i686.rpm
+	libXau-devel-1.0.6-4.el6.i686.rpm
+	libxcb-devel-1.8.1-1.el6.i686.rpm
+	
+****************************************************************************************************
+*************************************测试指令下发参考*****************************************************
+****************************************************************************************************
+
+//下发实时视频
+99dc0108,007201FFBC,wanlgl,C39,150119 105905,28f4da66-b37f-6a44-9fa6-a64ae7f005c0,1,0,180,0100,1,172.16.20.200:8080#
+
+//下发停止实时视频
+99dc0108,006A00BDD0,wanlgl,C39,141120 133220,28f4da66-b37f-6a44-9fa6-a64ae7f005c0,0,0,180,0100,1,172.16.20.200:6001#
+
+//查询mdvr历史存放视频
+99dc0066,007201FFBC,wanlgl,C110,141125 140743,141124 110000,233113,3,0300#
+
+//下载mdvr指定历史视频文件
+99dc0185,007201FFBC,wanlgl,C114,141125 144654,1aae8fa8-35bc-6547-bf2e-9e27539315e5,2,,,0,600,172.16.10.200:6001,/stm/disk/0/p1/2014-11-24/0GPD004500000000-141124-160000-163000-12k402000000.nvr#
+
+//关闭下载中的任务
+99dc0075,007201FFBC,wanlgl,C115,141125 144710,1aae8fa8-35bc-6547-bf2e-9e27539315e5#
